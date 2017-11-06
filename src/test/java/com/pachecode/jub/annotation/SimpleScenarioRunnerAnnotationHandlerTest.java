@@ -1,21 +1,22 @@
 package com.pachecode.jub.annotation;
 
+import com.pachecode.jub.bdd.runner.ScenarioRunner;
 import com.pachecode.jub.bdd.runner.SimpleScenarioRunner;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 /**
- * Created by ricardo.pachecosalazar@wnco.com on 3/22/2017.
+ * Created by Ricardo on 3/22/2017.
  */
-@Story("sum_scenario.story")
 public class SimpleScenarioRunnerAnnotationHandlerTest {
 
    public static final String TEST_CLASS_NAME = "com.pachecode.jub.annotation.SimpleScenarioRunnerAnnotationHandlerTest";
-   JubScenarioAnnotationHandler scenarioUtils = new JubScenarioAnnotationHandler();
+   ScenarioAnnotationHandler scenarioUtils = new ScenarioAnnotationHandler();
 
    @Test
    public void testGettingAMethodFromTheCaller() {
@@ -29,14 +30,14 @@ public class SimpleScenarioRunnerAnnotationHandlerTest {
    @Scenario("Sum scenario")
    @Test
    public void testGetScenarioInstanceFromAnnotation() {
-      SimpleScenarioRunner scenario = new SimpleScenarioRunner("Sum Scenario");
+      ScenarioRunner scenario = new SimpleScenarioRunner("Sum Scenario");
       scenarioUtils.registerScenario(TEST_CLASS_NAME, "testGetScenarioInstanceFromAnnotation", scenario);
-      assertEquals(scenario,  scenarioUtils.getScenarioFromThisMethod());
+      assertEquals(scenario,  scenarioUtils.getScenarioRunnerFromThisMethod());
    }
 
    @Test
    public void testGetScenarioOfGivenTest() {
-      SimpleScenarioRunner scenario = scenarioUtils.registerOrGetScenario(TEST_CLASS_NAME, "testGetScenarioInstanceFromAnnotation");
+      ScenarioRunner scenario = scenarioUtils.registerOrGetScenarioRunner(TEST_CLASS_NAME, "testGetScenarioInstanceFromAnnotation");
       assertEquals("Sum scenario", scenario.getName());
       assertEquals(scenario, scenarioUtils.getScenarioFromTestMethod(TEST_CLASS_NAME, "testGetScenarioInstanceFromAnnotation"));
    }
@@ -44,11 +45,13 @@ public class SimpleScenarioRunnerAnnotationHandlerTest {
    @Test
    @Scenario("Sum scenario")
    public void testStaticGivenWhenThen() {
-      //Registers the scenario from this testMethod @Scenario annotation
-      SimpleScenarioRunner scenario = JubScenarioAnnotationHandler.instance.registerOrGetScenario(this.getClass().getName(), "testStaticGivenWhenThen");
+      ScenarioAnnotationHandler handler = ScenarioAnnotationHandler.instance;
 
-      //Checks if we can get the same scenario
-      assertEquals(scenario, JubScenarioAnnotationHandler.instance.getScenarioFromThisMethod());
+      //Registers the runner from this testMethod @Scenario annotation
+      ScenarioRunner runner = handler.instance.registerOrGetScenarioRunner(this.getClass().getName(), "testStaticGivenWhenThen");
+
+      //Checks if we can get the same runner
+      assertEquals(runner, handler.getScenarioRunnerFromThisMethod());
 
       //This shouldn't throw exceptions
       JubUtils.given("one");

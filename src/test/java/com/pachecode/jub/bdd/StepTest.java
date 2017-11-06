@@ -5,19 +5,27 @@ import org.junit.Test;
 import static com.pachecode.jub.bdd.Step.StepType.*;
 
 /**
- * Created by ricardo.pachecosalazar@wnco.com on 10/31/2017.
+ * Created by Ricardo on 10/31/2017.
  */
 public class StepTest {
 
    @Test
-   public void testStepEquals() {
-      new Step(Given, "a precondition").equals(new Step(Given, "a precondition"));
-      new Step(When, "a precondition").equals(Step.parse("When a precondition"));
+   public void testStepMatches() {
+      new Step(Given, "a precondition").matches(Step.create("Given a precondition"));
+      new Step(When, "a precondition").matches(Step.create("When a precondition"));
+      new Step(When, "a precondition").matches("When a precondition");
    }
 
    @Test
    public void testStepNotEquals() {
-      new Step(Given, "a precondition").equals(new Step(When, "a precondition"));
-      new Step(When, "a preconditionssss").equals(Step.parse("When a precondition"));
+      new Step(Given, "a precondition").equals(Step.create("Given a precondition"));
+      new Step(When, "a preconditionssss").equals(Step.create("When a precondition"));
    }
+
+   @Test(expected = InvalidStepException.class)
+   public void testInvalidStep() {
+      Step.create("Givensss a precondition");
+   }
+
+
 }

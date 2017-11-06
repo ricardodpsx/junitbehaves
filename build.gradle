@@ -20,5 +20,7 @@ dependencies {
     compile "org.mockito:mockito-core:2.+"
     compile "commons-io:commons-io:2.3"
     compile name: 'antlr-4.5.3-complete'
-    compileOnly 'org.projectlombok:lombok:1.16.18'
+    compile'org.projectlombok:lombok:1.16.18'
+    compile group: 'org.jbehave', name: 'jbehave-core', version: '4.1.2'
+
 }

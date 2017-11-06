@@ -1,7 +1,7 @@
 package com.pachecode.jub.bdd.runner;
 
-import com.pachecode.jub.bdd.Scenario;
 import com.pachecode.jub.bdd.Step;
+import com.pachecode.jub.bdd.StepResult;
 
 import java.util.*;
 
@@ -9,61 +9,85 @@ import static com.pachecode.jub.bdd.Step.StepType.*;
 
 
 /**
- * Created by ricardo.pachecosalazar@wnco.com on 3/22/2017.
+ * Created by Ricardo on 3/22/2017.
  */
-public class SimpleScenarioRunner {
+public class SimpleScenarioRunner implements ScenarioRunner {
 
-   private final Scenario scenario;
-   Deque<StepResult> calledSteps = new ArrayDeque<>();
+   private final String name;
+   //private final JbehaveReport report;
+   List<Step> steps = new ArrayList<>();
 
+   int successFullSteps = -1;
 
    public SimpleScenarioRunner(String name) {
-      scenario = new Scenario(name);
+      this.name = name;
+     // this.report = report;
    }
 
-   public void given(String text) {
-      step(new Step(Given, text));
+   //TODO: Remove "given when then and" methods from this class
+   @Override
+   public void given(String stepLine) {
+      runStep(new Step(Given, stepLine));
    }
 
-   public void  when(String text) {
-      step(new Step(When, text));
+   @Override
+   public void  when(String stepLine) {
+      runStep(new Step(When, stepLine));
    }
 
-   public void then(String text) {
-      step(new Step(Then, text));
+   @Override
+   public void then(String stepLine) {
+      runStep(new Step(Then, stepLine));
    }
 
-   void step(Step step) {
-      makeLastSteepSucceed();
-      scenario.addStep(step);
-      calledSteps.push(new StepResult(scenario.getLastStep()));
+   @Override
+   public void and(String stepLine) {
+      runStep(new Step(And, stepLine));
    }
 
-   private void makeLastSteepSucceed() {
-      if(!calledSteps.isEmpty())
-         calledSteps.push(calledSteps.pop().makeSucceeded());
+   void runStep(Step step) {
+      successFullSteps++;
+      steps.add(step);
    }
 
-
-   public List<StepResult> calledSteps() {
-      List<StepResult> stepsList =  new ArrayList<>(calledSteps);
-      Collections.reverse(stepsList);
-      return stepsList;
-   }
-
-   public void successfulFinish() {
-      makeLastSteepSucceed();
-   }
-
+   @Override
    public String getName() {
-      return scenario.getName();
+      return name;
    }
 
-   public boolean didFailed() {
-      return !calledSteps.peek().didSucceed();
+   @Override
+   public boolean succeeded() {
+      return successFullSteps == steps.size();
    }
 
-   public Step lastRunStep() {
-      return calledSteps.peek().getStep();
+
+   public void doFinishSuccessfully() {
+      successFullSteps++;
    }
+
+   /**
+    * This function should be called at the end of the steps execution
+    */
+   @Override
+   public void doFinish() {
+      //report.onScenarioFinish(getResults());
+   }
+
+   @Override
+   public List<StepResult> getResults() {
+      List<StepResult> results =  new ArrayList<>();
+
+      for(int i = 0; i < steps.size(); i++) {
+         if(i < successFullSteps)
+            results.add(new StepResult(steps.get(i), StepResult.Status.Succeeded));
+         else if(i == successFullSteps)
+            results.add(new StepResult(steps.get(i), StepResult.Status.Failed));
+         else
+            results.add(new StepResult(steps.get(i), StepResult.Status.Pending));
+      }
+
+      return results;
+   }
+
+
 }

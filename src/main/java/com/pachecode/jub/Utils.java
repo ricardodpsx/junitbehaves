@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by ricardo.pachecosalazar@wnco.com on 4/3/2017.
+ * Created by Ricardo on 4/3/2017.
  */
 public class Utils {
 

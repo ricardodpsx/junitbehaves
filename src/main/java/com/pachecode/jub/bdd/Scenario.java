@@ -3,19 +3,13 @@ package com.pachecode.jub.bdd;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by ricardo.pachecosalazar@wnco.com on 10/30/2017.
- */
 public class Scenario {
    final List<Step> steps;
    final private String name;
 
-   public Scenario(String name) {
-      this(name, new ArrayList<Step>());
-   }
    public Scenario(String name, List<Step> steps) {
       this.name = name;
-      this.steps = steps;
+      this.steps = new ArrayList<>(steps);
    }
 
    public String getName() {
@@ -23,14 +17,11 @@ public class Scenario {
    }
 
    public List<Step> getSteps() {
-      return steps;
+      return new ArrayList<>(steps);
    }
 
-   public void addStep(Step step) {
-      steps.add(step);
-   }
+  public static Scenario create(String scenarioLine, List<Step> steps) {
+    return new Scenario(scenarioLine.replaceAll("(?i)Scenario:", "").trim(), steps);
+  }
 
-   public Step getLastStep() {
-      return steps.get(steps.size() - 1);
-   }
 }

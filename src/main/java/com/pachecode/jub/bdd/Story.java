@@ -1,23 +1,36 @@
 package com.pachecode.jub.bdd;
 
-import com.pachecode.jub.bdd.runner.SimpleScenarioRunner;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by ricardo.pachecosalazar@wnco.com on 4/3/2017.
- */
 public class Story {
    private String name;
-   List<SimpleScenarioRunner> scenarios = new ArrayList<>();
+   List<Scenario> scenarios = new ArrayList<>();
+   HashMap<String, Scenario> scenariosByName = new HashMap<>();
 
-   public Story(String name, String text) {
+   public Story(String name, List<Scenario> scenarios) {
       this.name = name;
-      String[] lines = text.split("\n");
+      this.scenarios = scenarios;
+      for(Scenario scenario: scenarios)
+         scenariosByName.put(scenario.getName(), scenario);
    }
 
    public String getName() {
       return name;
    }
+
+   public List<Scenario> getScenarios() {
+      return scenarios;
+   }
+
+   public Scenario getScenario(String scenarioName) {
+      if(!scenariosByName.containsKey(scenarioName))
+         throw new ScenarioNotFoundException(String.format(
+             "Scenario '%s' doesn't exist in the story '%s'", scenarioName, name));
+
+      return scenariosByName.get(scenarioName);
+   }
+
+
 }
