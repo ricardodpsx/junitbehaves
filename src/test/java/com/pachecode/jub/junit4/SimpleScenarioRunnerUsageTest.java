@@ -5,9 +5,9 @@ import com.pachecode.jub.annotation.Story;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static com.pachecode.jub.annotation.JubUtils.given;
-import static com.pachecode.jub.annotation.JubUtils.then;
-import static com.pachecode.jub.annotation.JubUtils.when;
+import static com.pachecode.jub.annotation.JubUtils.Given;
+import static com.pachecode.jub.annotation.JubUtils.Then;
+import static com.pachecode.jub.annotation.JubUtils.When;
 import static org.junit.Assert.fail;
 
 
@@ -15,22 +15,22 @@ import static org.junit.Assert.fail;
 public class SimpleScenarioRunnerUsageTest {
 
    @Rule
-   public JUnitBehaves simpleRunner = new JUnitBehaves();
+   public JUnitBehavesRule simpleRunner = new JUnitBehavesRule();
 
    @Test
    @Scenario("The calculator sums correctly")
    public void sumIsCorrectTest() {
-      given("The calculator is empty");
-      when("I sum 1 + 2");
-      then("Then I should see 3");
+      Given("The calculator is empty");
+      When("I sum 1 + 2");
+      Then("Then I should see 3");
    }
 
    @Test
    @Scenario("The calculator multiplies correctly")
-   public void multipliesCorrectly() {
-      given("The calculator is empty");
-      when("I multiply 2 * 3");
-      then("I should see 6");
+   public void thisShouldFail() {
+      Given("The calculator is empty");
+      When("I multiply 2 * 3");
+      Then("I should see 6");
       fail();
    }
 

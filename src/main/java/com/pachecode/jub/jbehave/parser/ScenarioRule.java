@@ -5,24 +5,26 @@ import com.pachecode.jub.bdd.Step;
 
 import java.util.ArrayList;
 import java.util.List;
+import static com.pachecode.jub.bdd.StepType.*;
 
 
 public class ScenarioRule extends SyntacticRule<Scenario> {
 
   private final StepRule GIVEN, WHEN, THEN, AND;
 
-  public ScenarioRule(Parser parser, SyntacticRule parent) {
-    super(parser, parent);
 
-    GIVEN = new StepRule(parser, Step.StepType.Given, this);
-    WHEN = new StepRule(parser, Step.StepType.When, this);
-    THEN = new StepRule(parser, Step.StepType.Then, this);
-    AND = new StepRule(parser, Step.StepType.And, this);
+  public ScenarioRule(LineLexer lineLexer, SyntacticRule parent) {
+    super(lineLexer, parent);
+
+    GIVEN = new StepRule(lineLexer, Given, this);
+    WHEN = new StepRule(lineLexer, When, this);
+    THEN = new StepRule(lineLexer, Then, this);
+    AND = new StepRule(lineLexer, And, this);
   }
 
   @Override
   public boolean lookAhead() {
-    return parser.currentLine().startsWith("scenario:");
+    return lineLexer.currentLine().startsWith("scenario:");
   }
 
   public Scenario match() {
@@ -31,8 +33,9 @@ public class ScenarioRule extends SyntacticRule<Scenario> {
 
     List<Step> steps = new ArrayList<>();
 
-    steps.add(GIVEN.match());
-    steps.addAll(AND.matchZeroOrMore());
+    steps.addAll(GIVEN.matchOneOrZero());
+    if(steps.size() > 0)
+      steps.addAll(AND.matchZeroOrMore());
 
     steps.add(WHEN.match());
     steps.addAll(AND.matchZeroOrMore());
@@ -40,12 +43,11 @@ public class ScenarioRule extends SyntacticRule<Scenario> {
     steps.add(THEN.match());
     steps.addAll(AND.matchZeroOrMore());
 
+
     return Scenario.create(scenarioLine, steps);
   }
 
-
-
   private String SCENARIO_LINE() {
-    return parser.match("scenario: .*");
+    return lineLexer.match("scenario: .*");
   }
 }

@@ -5,9 +5,10 @@ import com.pachecode.jub.annotation.Story;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static com.pachecode.jub.annotation.JubUtils.given;
-import static com.pachecode.jub.annotation.JubUtils.then;
-import static com.pachecode.jub.annotation.JubUtils.when;
+import static com.pachecode.jub.annotation.JubUtils.Given;
+import static com.pachecode.jub.annotation.JubUtils.Then;
+import static com.pachecode.jub.annotation.JubUtils.When;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -17,22 +18,43 @@ import static com.pachecode.jub.annotation.JubUtils.when;
 public class PredefinedScenarioRunnerUsageTest {
 
    @Rule
-   public JUnitBehaves jUnitRule = new JUnitBehaves();
+   public JUnitBehavesRule jUnitRule = new JUnitBehavesRule();
 
    @Test
    @Scenario("A Simple Acceptance Criteria")
    public void sumIsCorrectTest() {
-      given("a system state");
-      when("something happen");
-      then("the system state changes");
+      Given("a system state");
+      When("something happen");
+      try {
+         Thread.sleep(2000);
+      } catch (InterruptedException e) {
+         e.printStackTrace();
+      }
+      Then("the system state changes");
+   }
+
+   @Test
+   @Scenario("A Simple Acceptance Criteria")
+   public void shouldFailAtSecondStep() {
+      Given("a system state");
+      When("something happen");
+      fail();
+      Then("the system state changes");
    }
 
 
    @Test
    @Scenario("An acceptance criteria with Parameters")
-   public void thisTestShouldFail() {
-      given("a system state");
-      when("I do something");
+   public void shouldFailByWrongFirstStep() {
+      Given("a system state");
+      When("I do something");
+   }
+
+   @Test
+   @Scenario("An acceptance criteria with Parameters")
+   public void shouldFailByPendingSteps() {
+      Given("I type 1 and 2");
+      When("I command to sum");
    }
 
 }

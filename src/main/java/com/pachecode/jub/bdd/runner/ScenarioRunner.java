@@ -1,5 +1,7 @@
 package com.pachecode.jub.bdd.runner;
 
+import com.pachecode.jub.bdd.Step;
+import com.pachecode.jub.bdd.StepParams;
 import com.pachecode.jub.bdd.StepResult;
 
 import java.util.List;
@@ -7,22 +9,26 @@ import java.util.List;
 /**
  * Created by Ricardo on 11/5/2017.
  */
-public interface ScenarioRunner {
-   void given(String stepLine);
+public abstract class ScenarioRunner {
+   public abstract void runStep(Step step);
 
-   void  when(String stepLine);
+   public abstract String getName();
 
-   void then(String stepLine);
+   public abstract boolean succeeded();
 
-   void and(String stepLine);
+   public abstract void doFinishSuccessfully();
 
-   String getName();
+   public abstract List<StepResult> getResults();
 
-   boolean succeeded();
+   public abstract void doFailed();
 
-   void doFinish();
+   @Override
+   public String toString() {
+      String out = "Scenario: " + getName() + "\n";
+      for(StepResult result : getResults())
+         out += String.format("  %s [%s] %n", result.getStep(), result.getStatus());
 
-   void doFinishSuccessfully();
+      return out;
+   }
 
-   List<StepResult> getResults();
 }

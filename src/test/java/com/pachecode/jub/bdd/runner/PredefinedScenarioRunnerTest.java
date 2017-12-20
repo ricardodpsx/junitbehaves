@@ -1,17 +1,17 @@
 package com.pachecode.jub.bdd.runner;
 
-import com.pachecode.jub.bdd.Scenario;
-import com.pachecode.jub.bdd.Step;
-import com.pachecode.jub.bdd.StepResult;
+import com.pachecode.jub.bdd.*;
 import org.junit.Test;
 
 import java.util.Arrays;
 
+import static junit.framework.Assert.fail;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static com.pachecode.jub.bdd.StepType.*;
 
 /**
  * Created by Ricardo on 3/27/2017.
@@ -35,16 +35,16 @@ public class PredefinedScenarioRunnerTest {
 
   @Test
   public void testSuccessfulCase() {
-    scenarioRunner.given("the name is empty");
+    scenarioRunner.runStep(new Step(Given, "the name is empty"));
     String name = "";
 
-    scenarioRunner.when("I type 'Ricardo'");
+    scenarioRunner.runStep(new Step(When,"I type 'Ricardo'"));
     name = "Hello Ricardo";
 
-    scenarioRunner.then("I see 'Hello Ricardo'");
+    scenarioRunner.runStep(new Step(Then, "I see 'Hello Ricardo'"));
     assertEquals(name, "Hello Ricardo");
 
-    scenarioRunner.and("I say Hello back");
+    scenarioRunner.runStep(new Step(And, "I say Hello back"));
     scenarioRunner.doFinishSuccessfully();
 
     assertTrue(scenarioRunner.succeeded());
@@ -52,10 +52,10 @@ public class PredefinedScenarioRunnerTest {
 
   @Test
   public void testFailedCase() {
-    scenarioRunner.given("the name is empty");
+    scenarioRunner.runStep(new Step(Given, "the name is empty"));
     String name = "";
 
-    scenarioRunner.when("I type 'Ricardo'");
+    scenarioRunner.runStep(new Step(When, "I type 'Ricardo'"));
     name = "Hi Ricardo";
 
     //If Finish is never called, that means there was an error
@@ -64,26 +64,43 @@ public class PredefinedScenarioRunnerTest {
 
   @Test(expected = WrongStepException.class)
   public void testWrongStep() {
-    scenarioRunner.given("the name is empty");
+    scenarioRunner.runStep(new Step(Given, "the name is empty"));
 
-    scenarioRunner.when("I say blabla");
+    scenarioRunner.runStep(new Step(When, "I say blabla"));
   }
 
   @Test(expected = WrongStepException.class)
   public void testWrongStepOrder() {
-    scenarioRunner.given("the name is empty");
-    scenarioRunner.then("I see 'Hello Ricardo'");
-    scenarioRunner.when("I type 'Ricardo'");
+    scenarioRunner.runStep(new Step(Given, "the name is empty"));
+    scenarioRunner.runStep(new Step(Then, "I see 'Hello Ricardo'"));
+    scenarioRunner.runStep(new Step(When, "I type 'Ricardo'"));
   }
 
   @Test
   public void testPendingSteps() {
-    scenarioRunner.given("the name is empty");
-    scenarioRunner.when("I type 'Ricardo'");
-    scenarioRunner.then("I see 'Hello Ricardo'");
+    scenarioRunner.runStep(new Step(Given, "the name is empty"));
+    scenarioRunner.runStep(new Step(When, "I type 'Ricardo'"));
+    scenarioRunner.runStep(new Step(Then, "I see 'Hello Ricardo'"));
+    try {
+      scenarioRunner.doFinishSuccessfully();
+      fail("Should fail when calling finish successfully due to pending steps");
+    } catch (ScenarioException e) {
 
+    }
+
+    assertThat(scenarioRunner.getResults().get(2).getStatus(), is(StepResult.Status.Succeeded));
     assertThat(scenarioRunner.getResults().get(3).getStatus(), is(StepResult.Status.Pending));
     assertThat(scenarioRunner.getResults().size(), is(scenario.getSteps().size()));
+  }
+
+
+  @Test
+  public void testStepMatches() {
+    scenarioRunner.matches(new Step(Given, "a precondition"),
+        Step.create("Given a precondition"));
+
+    scenarioRunner.matches(new Step(When, "a precondition"), Step.create("When a precondition"));
+    scenarioRunner.matches(new Step(When, "a precondition"), Step.create("When a precondition"));
   }
 
 

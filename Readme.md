@@ -2,7 +2,7 @@
 
 To Update the Grammar:
 
-java -jar libs/antlr-4.5.3-complete.jar -package com.pachecode.jub.jbehave.parser -o  src/main/java/com/pachecode/jub/jbehave/parser/ src/main/java/com/pachecode/jub/jbehave/parser/JBehave.g4 
+java -jar libs/antlr-4.5.3-complete.jar -package com.pachecode.jub.jbehave.lineLexer -o  src/main/java/com/pachecode/jub/jbehave/lineLexer/ src/main/java/com/pachecode/jub/jbehave/lineLexer/JBehave.g4
 
 
 

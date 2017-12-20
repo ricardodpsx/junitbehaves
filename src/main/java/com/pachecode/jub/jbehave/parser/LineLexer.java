@@ -1,13 +1,13 @@
 package com.pachecode.jub.jbehave.parser;
 
 
-public class Parser {
+public class LineLexer {
 	private static final String EOF = "<--EOF-->";
 	protected int cursor = 0;
 	String[] lines;
 
 
-	public Parser(String code) {
+	public LineLexer(String code) {
 		lines = code.split("\n");
 	}
 

@@ -5,6 +5,8 @@ import lombok.ToString;
 import lombok.Value;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Value
 @EqualsAndHashCode
@@ -24,22 +26,10 @@ public class Step {
     this.body = body;
   }
 
-  public boolean matches(String line) {
-    return this.equals(Step.create(line, ""));
-  }
-
-  public boolean matches(Step step) {
-    return this.equals(step);
-  }
-
   public String getBody() {
     return body;
   }
 
-
-  public enum StepType {
-    Given, When, Then, And
-  }
   @Override
   public String toString() {
     return type.toString() + " " + getText();
@@ -61,7 +51,6 @@ public class Step {
   public static Step create(String line) {
     return new StepBuilder().create(line, "");
   }
-
 
 
   public static class StepBuilder {

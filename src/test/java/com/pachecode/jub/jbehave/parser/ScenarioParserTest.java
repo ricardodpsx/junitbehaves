@@ -21,7 +21,7 @@ public class ScenarioParserTest {
   @Test
   public void testSimpleScenario() throws IOException {
     String storyFile = readResourceContents("test_simple_scenario.story");
-    ScenarioRule parser = new ScenarioRule(new Parser(storyFile), null);
+    ScenarioRule parser = new ScenarioRule(new LineLexer(storyFile), null);
 
     Scenario scenario = parser.match();
     List<Step> steps = scenario.getSteps();
@@ -38,7 +38,7 @@ public class ScenarioParserTest {
   public void testScenarioWithMultiLineStep() {
     String storyFile = readResourceContents("test_step_with_body.story");
 
-    ScenarioRule parser = new ScenarioRule(new Parser(storyFile), null);
+    ScenarioRule parser = new ScenarioRule(new LineLexer(storyFile), null);
     Scenario scenario = parser.match();
     List<Step> steps = scenario.getSteps();
 
@@ -53,7 +53,7 @@ public class ScenarioParserTest {
   public void testScenarioWithAndSteps() {
     String storyFile = readResourceContents("test_steps_with_and.story");
 
-    ScenarioRule parser = new ScenarioRule(new Parser(storyFile), null);
+    ScenarioRule parser = new ScenarioRule(new LineLexer(storyFile), null);
     Scenario scenario = parser.match();
     List<Step> steps = scenario.getSteps();
 
@@ -62,5 +62,6 @@ public class ScenarioParserTest {
     assertThat(steps.get(3).toString(), is("And an event"));
     assertThat(steps.get(4).toString(), is("And another event"));
   }
+
 
 }

@@ -30,7 +30,7 @@ public class StepResult {
       return step.toString();
    }
 
-   public boolean didSucceed() {
+   public boolean isSuccess() {
       return Status.Succeeded == status;
    }
 

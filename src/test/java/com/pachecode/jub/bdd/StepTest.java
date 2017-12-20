@@ -2,24 +2,20 @@ package com.pachecode.jub.bdd;
 
 import org.junit.Test;
 
-import static com.pachecode.jub.bdd.Step.StepType.*;
+import static com.pachecode.jub.bdd.StepType.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Ricardo on 10/31/2017.
  */
 public class StepTest {
 
-   @Test
-   public void testStepMatches() {
-      new Step(Given, "a precondition").matches(Step.create("Given a precondition"));
-      new Step(When, "a precondition").matches(Step.create("When a precondition"));
-      new Step(When, "a precondition").matches("When a precondition");
-   }
 
    @Test
-   public void testStepNotEquals() {
-      new Step(Given, "a precondition").equals(Step.create("Given a precondition"));
-      new Step(When, "a preconditionssss").equals(Step.create("When a precondition"));
+   public void testStepEquals() {
+      assertTrue(new Step(Given, "a precondition").equals(Step.create("Given a precondition")));
+      assertFalse(new Step(When, "a preconditionssss").equals(Step.create("When a precondition")));
    }
 
    @Test(expected = InvalidStepException.class)
